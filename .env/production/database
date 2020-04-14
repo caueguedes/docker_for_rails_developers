@@ -1,0 +1,3 @@
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=my-production-password
+POSTGRES_DB=myapp_production

@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+
+  web:
+    image: caueguedes/myapp_web:prod
+    ports:
+      - "80:3000"
+    env_file:
+      - .env/production/database
+      - .env/production/web
+
+  redis:
+    image: redis
+
+  database:
+    image: postgres
+    env_file:
+      - .env/production/database
+    volumes:
+    - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

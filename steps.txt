@@ -1,0 +1,86 @@
+######################
+create rails web project
+######################
+
+$ docker  run -it --rm -v ${PWD}:/usr/src/app ruby:2.6 bash
+
+*** tty
+$ gem install rails
+$ rails new myapp --skip-bundle --skip-test
+
+-----Dockerfile-----
+FROM ruby:2.6
+
+LABEL maintainer=​ "rob@DockerForRailsDevelopers.com"​
+
+RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
+    nodejs
+
+COPY Gemfile* /usr/src/app/
+WORKDIR /usr/src/app
+RUN bundle install
+
+COPY . /usr/src/app/
+
+CMD ["rails", "server", '-b', '0.0.0.0']
+------end-------------
+
+note: without CMD docker run -p 3000:3000 railsapp rails s -b 0.0.0.0
+
+docker build -t railsapp .
+docker run [option] <custom image> <command>
+docker run -p 3000:3000 railsapp
+
+
+############
+DockerIgnore
+############
+
+$ touch .dockerignore
+
+----- .dockerignore -------
+
+.git
+.gitignore
+
+log/*
+
+tmp/*
+
+#editor files
+*.swp
+-------end------------------
+
+
+##############
+Docker-Compose
+##############
+
+-------docker-compose.yml----
+version: '3'
+
+services:
+    web:
+      build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+------end--------------------
+
+******
+add to top of file config/boot.rb
+
+------boot-rb-------
+$stdout.sync = true
+-------end ---------
+
+$ docker-compose build
+or
+$ docker-compose up -d
+
+docker-compose [start|stop|restart|pause|kill] <service>
+
+docker-compose logs -f <service>
+
+
